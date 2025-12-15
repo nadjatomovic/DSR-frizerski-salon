@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0.36
+    container_name: DSRvaje
+    hostname: db
+    restart: always
+    networks:
+      - frizerski_network
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: DSRFrizerskiSalon
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    networks:
+      - frizerski_network
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+  web:
+    image: php:8.1-apache
+    container_name: frizerski-web
+    restart: always
+
+    env_file:
+      - .env
+
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - frizerski_network
+    command: >
+       bash -c "apt-get update &&
+           apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev &&
+           docker-php-ext-configure gd --with-freetype --with-jpeg &&
+           docker-php-ext-install mysqli gd &&
+           docker-php-ext-enable mysqli gd &&
+           apache2-foreground"
+
+
+networks:
+  frizerski_network:
+    driver: bridge
+
+volumes:
+  db_data:

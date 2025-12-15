@@ -1,0 +1,13 @@
+# ENV (tajne)
+.env
+
+# Dependency folderi
+/vendor
+/node_modules
+
+# Log fajlovi
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
