@@ -26,3 +26,7 @@ http://localhost:8081
 
 phpMyAdmin:
 http://localhost:8080
+
+## Preview
+
+![Bella Donna App](bella-dona.png)
